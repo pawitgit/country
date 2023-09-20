@@ -14,9 +14,11 @@ export class CountryService {
     }
 
     public async initializer(): Promise<void> {
+        console.log("Initializer Master Country...");
         try {
             const getCountries = await this.getAllCountry();
             if(getCountries.length === 0) this.bulkWrite(COUNTRY);
+            console.log("Initializer Master Country Done...");
         } catch (error) {
             throw Error("Can't insert new country");
         }

@@ -26,7 +26,7 @@ export class User {
     lname: string;
 
     @IsNotEmpty()
-    @Prop({required: true, type: mongoose.Schema.Types.ObjectId, ref: 'Country' })
+    @Prop({required: true, type: mongoose.Schema.Types.ObjectId, ref: Country.name })
     country: Country
 }
 

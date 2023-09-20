@@ -23,8 +23,9 @@ export class UserService {
         return newUser.save();
     }
 
-    public async findOne(username: string): Promise<User> {
-        const user = await this.userModel.findOne({ username });
+    public async auth(username: string): Promise<User> {
+        const user = await this.userModel.findOne({ username })
+            .populate(Country.name.toLowerCase()).exec();
         return user;
     }
     

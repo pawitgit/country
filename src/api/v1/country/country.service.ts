@@ -29,6 +29,6 @@ export class CountryService {
     }
 
     public getAllCountry(): Promise<Country[]> {
-        return this.countryModel.find().exec();
+        return this.countryModel.find({}, "-_id -createdAt -updatedAt -__v").exec();
     }
 }

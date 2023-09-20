@@ -14,7 +14,7 @@ export class UserService {
     }
 
     public async getAllUser(): Promise<User[]> {
-        return this.userModel.find().exec();
+        return this.userModel.find({}, '-id -__v -createdAt -updatedAt -password -_id').populate(Country.name.toLowerCase(), "name -_id").exec();
     }
 
     private async createUser(user: User): Promise<User> {
@@ -23,17 +23,18 @@ export class UserService {
     }
 
     public async auth(username: string): Promise<User> {
-        const user = await this.userModel.findOne({ username })
+        const user = await this.userModel.findOne({ username }, '-id -__v')
             .populate(Country.name.toLowerCase()).exec();
         return user;
     }
     
-    public async register(userDto: User): Promise<User> {
+    public async register(userDto: User): Promise<any> {
         const { username, password: pass, fname, lname, country } = userDto;
-        const getCountry = await this.countryModel.findOne({name: country});
+        const getCountry = await this.countryModel.findOne({name: country}).exec();
         if(!getCountry) throw new Error("Can't find country");
         const password = await encrypt(pass);
         const user = { username, password, fname, lname, country: getCountry } as User;
-        return this.createUser(user);
+        await this.createUser(user);
+        return { username, fname, lname, country: {name: getCountry.name}}
     };
 }

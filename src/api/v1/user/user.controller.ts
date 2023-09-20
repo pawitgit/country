@@ -15,9 +15,21 @@ export class UserController {
     @UseGuards(AuthGuard)
     @ApiBearerAuth("Authorization")
     @ApiOkResponse({
-        description: "response user list",
-        type: User,
-        isArray: true
+        schema: {
+            type: 'array',
+              items: {
+                properties: {
+                    username: { type: "string",  example: "pawit", },
+                    fname: { type: "string", example: "pawit", },
+                    lname: { type: "string", example: "Thongpramoon", },
+                    country: { 
+                      properties: {
+                          name: { type: "string", example: "Thailand" }
+                      }
+                  },
+              },
+              }
+          },
     })
     @ApiBadRequestResponse({ description: "400 Bad Request"})
     @Get()

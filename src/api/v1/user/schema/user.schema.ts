@@ -20,7 +20,7 @@ export class User {
 
     @ApiProperty({
         description: "password of user",
-        example: "$2b$10$/a8WpvCbWUkzAJuS7vwbmefCUNpS26goMHo7hwjVUigfH5Y2akR.K"
+        example: "123456"
     })
     @IsNotEmpty()
     @Prop({ required: true, min: 8 })

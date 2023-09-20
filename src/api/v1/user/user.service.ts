@@ -10,7 +10,6 @@ export class UserService {
         @InjectModel(User.name) private userModel: Model<User>,
         @InjectModel(Country.name) private countryModel: Model<Country>
         ) {
-        
         this.test();
     }
 

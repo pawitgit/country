@@ -1,9 +1,4 @@
-import { Country } from "../country/schema/country.schema";
-
 export default interface AuthInterface {
+    sub: string;
     username: string;
-    fname: string;
-    lname: string;
-    country: Country;
-    token: string;
 }

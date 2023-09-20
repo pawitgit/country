@@ -9,7 +9,7 @@ async function bootstrap() {
     .setTitle("Eventpass Test")
     .setDescription("create for test")
     .setVersion("1.0")
-    .addTag("Eventpass")
+    .addBearerAuth()
     .build();
     
   const document = SwaggerModule.createDocument(app, config);

@@ -27,7 +27,7 @@ export class UserService {
         return user;
     }
     
-    public async register(userDto: any): Promise<User> {
+    public async register(userDto: User): Promise<User> {
         const { username, password, fname, lname, country } = userDto;
         const getCountry = await this.countryModel.findOne({name: country});
         if(!getCountry) throw new Error("Can't find country");

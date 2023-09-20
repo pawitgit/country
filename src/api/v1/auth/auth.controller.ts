@@ -1,8 +1,10 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards, Request, HttpException } from "@nestjs/common";
+import { Body, Controller, HttpCode, HttpStatus, Post, HttpException } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { User } from "../user/schema/user.schema";
 import { UserService } from "../user/user.service";
+import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 
+@ApiTags("Auth")
 @Controller("/auth")
 export class AuthController {
     constructor(
@@ -10,24 +12,54 @@ export class AuthController {
         private userService: UserService
     ) {}
 
-    @HttpCode(HttpStatus.OK)
+
+    @ApiBody({
+        schema: {
+          type: 'object',
+          properties: {
+            username: {
+                type: "string",
+                example: "pawit",
+                description: "enter username"
+            },
+            password: {
+                type: "string",
+                example: "123456",
+                description: "enter password of user"
+            }
+          },
+        },
+      })
+    @ApiOkResponse({
+        description: "response json object {access_token: ...}"
+    })
+    @ApiBadRequestResponse({
+        description: `response message string "Unauthorized"`,
+        status: 401
+    })
     @Post("/login")
-    public signIn(@Body() signInDto: Record<string, any>) {
-        return this.authService.signIn(signInDto.username, signInDto.password);
+    public signIn(@Body() user: User) {
+        return this.authService.signIn(user.username, user.password);
     }
 
-    @HttpCode(HttpStatus.OK)
+
+    @ApiCreatedResponse({
+        description: 'The user records',
+        type: User,
+        isArray: true
+    })
+    @ApiBadRequestResponse({ description: "example: Username already exist, Bad Request, Can't find country"})
     @Post("/register")
-    public async createUser(@Body() userDto: Record<string, any>) {
+    public async createUser(@Body() user: User) {
         try {
-            if(!userDto) throw new HttpException('400 Bad Request', HttpStatus.BAD_REQUEST);
-            return await this.userService.register(userDto);
+            if(!user) throw new HttpException('Bad Request user is Empty Object', HttpStatus.BAD_REQUEST);
+            return await this.userService.register(user);
         } catch (error) {
-            let errMgs = "";
             if(error.message.search("duplicate") !== -1) {
-                errMgs = `${userDto.username} already exist`;
+                throw new HttpException(`${user.username} already exist`, HttpStatus.BAD_REQUEST);
+            } else {
+                throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
             }
-            throw new HttpException(errMgs, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

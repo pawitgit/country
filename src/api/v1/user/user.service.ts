@@ -3,6 +3,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { User } from "src/api/v1/user/schema/user.schema";
 import { Country } from "../country/schema/country.schema";
+import { encrypt } from "../shared/bcryptPassword";
 
 @Injectable()
 export class UserService {
@@ -28,9 +29,10 @@ export class UserService {
     }
     
     public async register(userDto: User): Promise<User> {
-        const { username, password, fname, lname, country } = userDto;
+        const { username, password: pass, fname, lname, country } = userDto;
         const getCountry = await this.countryModel.findOne({name: country});
         if(!getCountry) throw new Error("Can't find country");
+        const password = await encrypt(pass);
         const user = { username, password, fname, lname, country: getCountry } as User;
         return this.createUser(user);
     };

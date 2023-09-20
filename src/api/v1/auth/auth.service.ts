@@ -3,6 +3,7 @@ import { UserService } from "../user/user.service";
 import AuthInterface from "../interfaces/auth.interface";
 import { JwtService } from "@nestjs/jwt";
 import PayloadInterface from "../interfaces/payload.interface";
+import { decrypt } from "../shared/bcryptPassword";
 
 @Injectable()
 export class AuthService {
@@ -13,7 +14,9 @@ export class AuthService {
 
     async signIn(username: string, password: string): Promise<PayloadInterface> {
         const u = await this.userService.auth(username)
-        if(!u || u?.password !== password) {
+
+        const comparePassword = await decrypt(password, u?.password);
+        if(!u || !comparePassword) {
             throw new UnauthorizedException();
         }
 

@@ -10,14 +10,13 @@ export class UserService {
         @InjectModel(User.name) private userModel: Model<User>,
         @InjectModel(Country.name) private countryModel: Model<Country>
         ) {
-        this.test();
     }
 
     public async getAllUser(): Promise<User[]> {
         return this.userModel.find().exec();
     }
 
-    public async createUser(user: User): Promise<User> {
+    private async createUser(user: User): Promise<User> {
         const newUser = new this.userModel(user);
         return newUser.save();
     }
@@ -28,14 +27,11 @@ export class UserService {
         return user;
     }
     
-    public async test() {
-        // const user = new User();
-        // const ct = await this.countryModel.find({name: "Thailand"});
-        // user.country = ct[0];
-        // user.fname = "Pawit";
-        // user.lname = "Thongpramoon";
-        // user.password = "123456";
-        // user.username = "pawit";
-        // this.createUser(user);
+    public async register(userDto: any): Promise<User> {
+        const { username, password, fname, lname, country } = userDto;
+        const getCountry = await this.countryModel.findOne({name: country});
+        if(!getCountry) throw new Error("Can't find country");
+        const user = { username, password, fname, lname, country: getCountry } as User;
+        return this.createUser(user);
     };
 }

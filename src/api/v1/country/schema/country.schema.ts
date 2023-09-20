@@ -5,7 +5,7 @@ export type CountryDocument = HydratedDocument<Country>;
 
 @Schema({timestamps: true})
 export class Country {
-    @Prop({ required: true })
+    @Prop({ required: true, unique: true })
     name: string;
 }
 

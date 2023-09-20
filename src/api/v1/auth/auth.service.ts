@@ -9,12 +9,7 @@ export class AuthService {
     constructor(
         private userService: UserService,
         private jwtService: JwtService
-    ) {
-        // (async() => {
-        //     let user = await this.signIn("pawit", "123456");
-        //     console.log(user);
-        // })();
-    }
+    ) { }
 
     async signIn(username: string, password: string): Promise<PayloadInterface> {
         const u = await this.userService.auth(username)

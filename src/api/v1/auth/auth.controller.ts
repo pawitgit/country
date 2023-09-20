@@ -1,4 +1,4 @@
-import { Body, Controller, HttpCode, HttpStatus, Post, HttpException } from "@nestjs/common";
+import { Body, Controller, HttpCode, HttpStatus, Post, HttpException, UnauthorizedException } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { User } from "../user/schema/user.schema";
 import { UserService } from "../user/user.service";
@@ -48,6 +48,7 @@ export class AuthController {
     })
     @Post("/login")
     public signIn(@Body() user: User) {
+        if(!user) throw new UnauthorizedException();
         return this.authService.signIn(user.username, user.password);
     }
 
